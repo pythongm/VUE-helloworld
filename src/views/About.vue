@@ -18,6 +18,9 @@
 		</div>
 		<p>{{normal()}}</p>
 		<p>{{comput1}}</p>
+		<div>
+			<hiworld msg="123456" :num="20"></hiworld>
+		</div>
 	</div>
 </template>
 

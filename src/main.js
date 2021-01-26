@@ -4,6 +4,8 @@ import router from './router'
 import store from './store'
 
 Vue.config.productionTip = false
+import hiworld from '@/components/hiworld.vue'
+Vue.component("hiworld",hiworld)
 
 new Vue({
   router,
