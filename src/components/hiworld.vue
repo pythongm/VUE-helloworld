@@ -3,6 +3,7 @@
 		<h1>这是一个全局组件</h1>
 		<p>我接收到的msg值为{{msg}}</p>
 		<p>我接收到的num值为{{num}}</p>
+		<button @click="myfun">子传父</button>
 	</div>
 </template>
 
@@ -13,7 +14,13 @@ export default {
 	msg:String,
 	num:{
 		type:Number,
-		required:true
+		required:true,
+		
+	}
+  },
+  methods:{
+	myfun(){
+		this.$emit("toparent",{"name":"qiku"});
 	}
   }
 }

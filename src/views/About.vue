@@ -19,7 +19,7 @@
 		<p>{{normal()}}</p>
 		<p>{{comput1}}</p>
 		<div>
-			<hiworld msg="123456" :num="20"></hiworld>
+			<hiworld msg="123456" :num="20" @toparent="myshow"></hiworld>
 		</div>
 	</div>
 </template>
@@ -46,6 +46,9 @@ export default {
 		},
 		add(){
 			this.num++;
+		},
+		myshow(e){
+			console.log("About组件接收了",e);
 		}
 	},
 	computed:{
