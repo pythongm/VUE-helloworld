@@ -1,9 +1,10 @@
 <template>
 	<div class="hello">
-		<h1>这是一个全局组件</h1>
+		<!-- <h1>这是一个全局组件</h1>
 		<p>我接收到的msg值为{{msg}}</p>
-		<p>我接收到的num值为{{num}}</p>
-		<button @click="myfun">子传父</button>
+		<p>我接收到的num值为{{num}}</p> -->
+		<slot name="top"></slot>
+		<button @click="myfun">子传父 按钮:<slot name="inner"></slot></button>
 	</div>
 </template>
 

@@ -19,7 +19,7 @@
 		<p>{{normal()}}</p>
 		<p>{{comput1}}</p>
 		<div>
-			<hiworld msg="123456" :num="20" @toparent="myshow"></hiworld>
+			<hiworld msg="123456" :num="20" @toparent="myshow">About你好</hiworld>
 		</div>
 	</div>
 </template>
