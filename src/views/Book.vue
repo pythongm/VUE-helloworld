@@ -19,8 +19,8 @@
 		</el-row>
 
 	</div> -->
-	<el-container style="width: 60%; margin: 0 auto;">
-		<el-header>
+	<el-container style="width: 60%; margin: 0 auto;" v-if="book">
+		<el-header v-if="book">
 			<el-col :span="20">
 				<h1 class="title">{{book.title}} </h1>
 			</el-col>
@@ -35,55 +35,71 @@
 			</el-col>
 		</el-header>
 		<el-container>
-			<el-aside width="300px">
-				<img :src='book.mainimg' alt="" style="height: 200px;">
-				<p>{{book.outline}}</p>
-			</el-aside>
-			<el-container>
-				<el-main>
-					<el-row :gutter="20">
-						<el-col :span="6" v-for="(a,index) in articles" :key="a.title">
-							<router-link :to="'/article/'+a.id">
-								<el-tag type="success" style="margin-top: 10px;">第{{index+1}}章--{{a.title}}</el-tag>
-							</router-link>
-						</el-col>
-					</el-row>
-				</el-main>
-				<el-footer>
-					<router-link :to="({name:'Home'})">返回首页</router-link>
-				</el-footer>
-			</el-container>
+			<el-main>
+				<el-row :gutter="20">
+					<img :src='book.mainimg' alt="" style="height: 200px;">
+					<p>{{book.outline}}</p>
+					<el-col :span="6" v-for="(a,index) in book.articles" :key="a.title">
+						<router-link :to="'/article/'+a.id">
+							<el-tag type="success" style="margin-top: 10px;">第{{index+1}}章--{{a.title}}</el-tag>
+						</router-link>
+					</el-col>
+				</el-row>
+			</el-main>
+			<el-footer>
+				<router-link :to="({name:'Home'})">返回首页</router-link>
+			</el-footer>
 		</el-container>
 	</el-container>
 </template>
 
 <script>
-	import {
-		articles,
-		books
-	} from '../data/bookdata.js'
+	// import {
+	// 	articles,
+	// 	books
+	// } from '../data/bookdata.js'
 	export default {
 		data() {
 			return {
+				articles:[],
 				book: null,
-				articles: [],
 				user:null,
 				has:false
 			}
 		},
 		created() {
-			let user = this.$jscookie.get("user")
+			// let datas = this.$mock.mock({
+			// 	"books|30":[
+			// 		{
+			// 			"title": "@CTITLE",
+			// 			"mainimg": "@IMAGE(240X320,@COLOR)",
+			// 			"outline": "@CSENTENCE(50,100)",
+			// 			"id|+1": 101
+			// 		}
+			// 	],
+			// 	"articles|200":[
+			// 		{
+			// 			"id|+1": 100001,
+			// 			"title": "@CTITLE",
+			// 			"bookid": "@NATURAL(101,130)",
+			// 			"content": "@CSENTENCE(500,1000)"
+			// 		}
+			// 	]
+			// })
+			let user = this.$jscookie.get("token")
 			if(user){
 				this.user=user;
 			}
-			this.book = books.filter((item)=>{
-				return item.id == this.$route.params.pk;
-			})[0]
-			this.articles=articles.filter((item)=>{
-				return item.bookid == this.$route.params.pk;
+			this.$axios({
+				url:`books/${this.$route.params.pk}/`,
+				method:'get'
+			}).then(res=>{
+				this.book = res.data;
+				this.has = res.data.collectinfo.hascollect
+			}).catch(err=>{
+				console.log("err",err);
 			})
 			
-			this.has = this.$store.getters.getCollectBoos.indexOf(this.book.id)>=0?true:false
 		},
 		methods:{
 			// go(){
@@ -92,7 +108,18 @@
 			add(){
 				this.$message('加入书架');
 				this.has=true
-				this.$store.commit("addCollect",this.book.id)
+				// this.$store.commit("addCollect",this.book.id)
+				this.$axios({
+					url:'collects/',
+					method:'post',
+					data:{
+						book:this.book.title
+					}
+				}).then(res=>{
+					console.log("收藏成功",res)
+				}).catch(err=>{
+					console.log("err",err);
+				})
 			}
 		}
 	}

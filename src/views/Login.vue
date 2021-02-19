@@ -33,19 +33,38 @@
 		},
 		methods: {
 			onSubmit() {
-				console.log('登录成功!');
-				this.$jscookie.set('user','gm1998',{expires:7})
-				
-				// this.$root.$children[0].user = this.$jscookie.get("user")
-				this.$bus.$emit("userlogin",this.$jscookie.get("user"))
-				
-				let next = this.$route.query.next;
-				if(next){
-					this.$router.push(next)
+				if(this.formLabelAlign.username.length<=0||this.formLabelAlign.password.length<=0){
+					this.$message("用户名密码均不能为空");
+					return
 				}
-				else{
-					this.$router.push({name:'Home'})
-				}
+				this.$axios({
+					url:"obtainjwt/",
+					method:"post",
+					data:{
+						username:this.formLabelAlign.username,
+						password:this.formLabelAlign.password
+					}
+					
+				}).then((res)=>{
+					this.$message('登录成功');
+					
+					this.$jscookie.set('token',res.data.access , { expires: 1000 })
+					
+					// this.$root.$children[0].user = "zzy0371"
+					this.$bus.$emit("userlogin",this.formLabelAlign.username)
+					
+					
+					let next = this.$route.query.next;
+					if(next){
+						this.$router.push(next)
+					}
+					else{
+						this.$router.push({name:'Home'})
+					}
+				}).catch(err=>{
+					console.log("错误原因",err);
+				})
+				
 			}
 		}
 	}

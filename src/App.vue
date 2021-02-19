@@ -13,12 +13,12 @@
 							<router-link :to="{name:'Collect'}" style="color: white;text-decoration: none;">收藏<i class="el-icon-reading"></i></router-link>
 						</el-menu-item>
 					</el-submenu>
-					<template v-if="user">
+					<template v-if="userinfo">
 						<el-menu-item class="rt" index="4" @click="logout">退出</el-menu-item>
 						<el-menu-item class="rt" index="3">
-							<router-link :to="{name:'Center'}">{{user}}</router-link>
+							<router-link :to="{name:'Center'}">{{userinfo.username}}</router-link>
 						</el-menu-item>
-					</template>				
+					</template>
 					<template v-else>
 						<el-menu-item class="rt" index="4">
 							<router-link :to="{name:'Regist'}">注册</router-link>
@@ -26,7 +26,7 @@
 						<el-menu-item class="rt" index="3">
 							<router-link :to="{name:'Login'}">登录</router-link>
 						</el-menu-item>
-					</template>					
+					</template>
 				</el-menu>
 			</el-header>
 			<el-main>
@@ -44,17 +44,34 @@
 		data() {
 			return {
 				activeIndex2: '1',
-				user:null
+				user: null,
+				userinfo:null
 			};
 		},
-		created(){
+		created() {
 			this.$bus.$on("userlogin",_u=>{
-				this.user = _u;
+				this.user=_u
+				this.$axios({
+					url:"users/getuserinfo/",
+					method:"get"
+				}).then(res=>{
+					console.log(res,"userinfo");
+					this.userinfo=res.data
+				})
 			})
 			
-			let user = this.$jscookie.get("user")
-			if(user){
-				this.user = user;
+			let user =this.$jscookie.get('token')
+			
+			if(user)
+			{
+				this.user=user;
+				this.$axios({
+					url:"users/getuserinfo/",
+					method:"get"
+				}).then(res=>{
+					console.log(res,"userinfo");
+					this.userinfo=res.data
+				})
 			}
 		},
 		beforeDestroy() {
@@ -64,13 +81,15 @@
 			handleSelect(key, keyPath) {
 				console.log(key, keyPath);
 			},
-			logout(){
-				if(this.$route.name!="Home"){
-					this.$router.push({name:"Home"});
+			logout() {
+				if (this.$route.name != "Home") {
+					this.$router.push({
+						name: "Home"
+					});
 				}
 				this.user = null;
-				this.$jscookie.remove("user")
-			}
+				this.$jscookie.remove("token")
+			},
 		}
 	}
 </script>
@@ -82,10 +101,11 @@
 		-moz-osx-font-smoothing: grayscale;
 		text-align: center;
 		color: #2c3e50;
-		a{
+
+		a {
 			text-decoration: none;
 		}
-		
+
 
 		.el-header {
 			padding: 0;

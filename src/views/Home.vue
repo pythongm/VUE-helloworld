@@ -30,7 +30,7 @@
 			<el-col :span="6" v-for="b in books" :key="b.id">
 				<router-link :to="'/book/'+b.id">
 					<el-card :body-style="{ padding: '0px' }" shadow="hover" class="book">
-						<img :src="b.mainimg" class="image">
+						<img :src="'http://127.0.0.1:8000'+b.image" class="image">
 						<div style="padding: 14px;">
 							<span>{{b.title}}</span>
 						</div>
@@ -42,9 +42,9 @@
 </template>
 
 <script>
-	import {
-		books
-	} from '../data/bookdata.js'
+	// import {
+	// 	books
+	// } from '../data/bookdata.js'
 	// console.log(books)
 	// @ is an alias to /src
 	// import HelloWorld from '@/components/HelloWorld.vue'
@@ -96,9 +96,29 @@
 				// star1:0,
 				// star2:0,
 				// star3:0
-				books: books
+				books: []
 
 			}
+		},
+		created() {
+			// let datas = this.$mock.mock({
+			// 	"books|30":[
+			// 		{
+			// 			"title": "@CTITLE",
+			// 			"mainimg": "@IMAGE(240X320,@COLOR)",
+			// 			"outline": "@CSENTENCE(50,100)",
+			// 			"id|+1": 101
+			// 		}
+			// 	]
+			// })
+			this.$axios({
+				method:"get",
+				url:"books/"
+			}).then(res=>{
+				this.books = res.data
+			}).catch(err=>{
+				console.log(err);
+			})
 		}
 	}
 </script>

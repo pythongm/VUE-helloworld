@@ -91,7 +91,7 @@ router.beforeEach(function(t, f, n) {
 	// 先判断是否需要授权
 	if (t.meta.auth) {
 		// 如果需要授权 在判断有没有登录
-		let user = cookies.get("user")
+		let user = cookies.get("token")
 		if (user) {
 			n();
 		} else {
